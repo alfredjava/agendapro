@@ -11,7 +11,7 @@ public interface AlumnoMapper {
 
     AlumnoMapper INSTANCE = Mappers.getMapper(AlumnoMapper.class);
 
-    @Mapping(target = "id", ignore = true) // Ignora el id ya que se genera automáticamente o se establece en otro lugar
+    //@Mapping(target = "id", ignore = true) // Ignora el id ya que se genera automáticamente o se establece en otro lugar
     Alumno mapToAlumno(AlumnoRequest alumnoRequest);
 
 
