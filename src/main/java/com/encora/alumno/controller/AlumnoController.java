@@ -1,6 +1,7 @@
 package com.encora.alumno.controller;
 
-import com.encora.alumno.model.Alumno;
+import com.encora.alumno.model.AlumnoRequest;
+import com.encora.alumno.repository.Alumno;
 import com.encora.alumno.service.AlumnoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
@@ -17,14 +18,14 @@ public class AlumnoController {
     private AlumnoService service;
 
     @GetMapping("/activos")
-    public Flux<Alumno> getAllAlumnosActivos() {
+    public Flux<AlumnoRequest> getAllAlumnosActivos() {
         return service.getAllAlumnosActivos();
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Mono<Alumno> saveAlumno(@RequestBody Alumno alumno) {
-        return service.saveAlumno(alumno)
+    public Mono<Alumno> saveAlumno(@RequestBody AlumnoRequest alumno) {
+        return service.saveAlumnoFromRequest(alumno)
                 .onErrorResume(DuplicateKeyException.class, e -> {
                     return Mono.error(new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage()));
                 });

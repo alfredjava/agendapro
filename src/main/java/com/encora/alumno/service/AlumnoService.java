@@ -1,6 +1,8 @@
 package com.encora.alumno.service;
 
-import com.encora.alumno.model.Alumno;
+import com.encora.alumno.service.mapper.AlumnoMapper;
+import com.encora.alumno.model.AlumnoRequest;
+import com.encora.alumno.repository.Alumno;
 import com.encora.alumno.repository.AlumnoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
@@ -13,11 +15,13 @@ public class AlumnoService {
     @Autowired
     private AlumnoRepository repository;
 
-    public Flux<Alumno> getAllAlumnosActivos() {
-        return repository.findAllByEstado("activo");
+
+    public Flux<AlumnoRequest> getAllAlumnosActivos() {
+        return repository.findAllByEstado("activo")
+                .map(AlumnoMapper.INSTANCE::mapToAlumnoRequest);
     }
 
-    public Mono<Alumno> saveAlumno(Alumno alumno) {
+    private Mono<Alumno> saveAlumno(Alumno alumno) {
         // Check if the ID is null, if so, the database will generate it
         if (alumno.getId() != null) {
             return repository.existsById(alumno.getId())
@@ -31,5 +35,10 @@ public class AlumnoService {
         } else {
             return repository.save(alumno);
         }
+    }
+
+    public Mono<Alumno> saveAlumnoFromRequest(AlumnoRequest alumnoRequest) {
+        Alumno alumno = AlumnoMapper.INSTANCE.mapToAlumno(alumnoRequest);
+        return saveAlumno(alumno);
     }
 }
